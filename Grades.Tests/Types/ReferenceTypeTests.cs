@@ -13,16 +13,48 @@ namespace Grades.Tests.Types
     {
 
         [TestMethod]
-        public void ValueTypePassByValue()
+        public void UsingArrays()
         {
-            int x = 46;
-            IncrementNumber(x);
+            float[] grades;
+            grades = new float[3];
 
-            Assert.AreEqual(46, x);
+            AddGrades(grades);
+            Assert.AreEqual(89.1f, grades[1]);
+        }
+
+        private void AddGrades(float[] grades)
+        {
+            grades[1] = 89.1f;
 
         }
 
-        private void IncrementNumber(int number)
+        [TestMethod]
+        public void UppercaseAString()
+        {
+            string name = "pompi";
+            name = name.ToUpper();
+            Assert.AreEqual("POMPI", name);
+        }
+
+        [TestMethod]
+        public void AddDaysToDateTime()
+        {
+            DateTime date = new DateTime(2015, 1, 1);
+            date = date.AddDays(1);
+            Assert.AreEqual(2, date.Day);
+        }
+
+        [TestMethod]
+        public void ValueTypePassByValue()
+        {
+            int x = 46;
+            IncrementNumber(ref x);
+
+            Assert.AreEqual(47, x);
+
+        }
+
+        private void IncrementNumber(ref int number)
         {
             number += 1;
         }
@@ -33,12 +65,13 @@ namespace Grades.Tests.Types
             GradeBook book1 = new GradeBook();
             GradeBook book2 = book1;
 
-            GiveBookAName(book2);
-            Assert.AreEqual("A GradBook", book1.Name);
+            GiveBookAName(ref book2);
+            Assert.AreEqual("A GradBook", book2.Name);
         }
 
-        private void GiveBookAName(GradeBook book)
+        private void GiveBookAName(ref GradeBook book)
         {
+            book = new GradeBook();
             book.Name = "A GradBook";
         }
 
