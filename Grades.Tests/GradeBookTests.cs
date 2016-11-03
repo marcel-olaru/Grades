@@ -12,6 +12,13 @@ namespace Grades.Tests
     [TestClass]
     public class GradeBookTests
     {
+
+        [TestMethod]
+        public void TestLetterGrade()
+        {
+
+        }
+
         [TestMethod]
         public void ComputesHighestGrade()
         {
