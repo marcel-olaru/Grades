@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Speech.Synthesis;
 using System.Text;
@@ -11,12 +12,54 @@ namespace Grades
     {
         static void Main(string[] args)
         {
+            IGradeTracker book = CreateGradebook();
 
-          
-            
-            GradeBook book = new GradeBook();
-            
+            //GetBookName(book);
+            AddGrades(book);
+            SaveGrades(book);
+            WriteResults(book);
 
+            Console.ReadKey();
+        }
+
+        private static IGradeTracker CreateGradebook()
+        {
+            return new ThrowAwayGradeBook();
+        }
+
+        private static void WriteResults(IGradeTracker book)
+        {
+            GradeStatistics stats = book.ComputerStatistics();
+            foreach (float grade in book)
+            {
+                Console.WriteLine(grade);
+            }
+
+            WriteResult("Average", stats.AverageGrade);
+            WriteResult("Highest", stats.HighestGrade);
+            WriteResult("Lowest", stats.LowestGrade);
+            WriteResult(stats.Description, stats.LetterGrade);
+        }
+
+        private static void SaveGrades(IGradeTracker book)
+        {
+            using (StreamWriter outputFile = File.CreateText("grades.txt"))
+            {
+                //book.WriteGrades(Console.Out);
+                book.WriteGrades(outputFile);
+
+            }
+        }
+
+        private static void AddGrades(IGradeTracker book)
+        {
+            book.AddGrade(91);
+            book.AddGrade(89.5f);
+            book.AddGrade(75);
+        }
+
+        private static void GetBookName(IGradeTracker book)
+        {
             try
             {
                 Console.WriteLine("Enter a name");
@@ -27,37 +70,12 @@ namespace Grades
 
                 Console.WriteLine(ex.Message);
             }
-            
-
-            book.AddGrade(91);
-            book.AddGrade(89.5f);
-            book.AddGrade(75);
-            book.WriteGrades(Console.Out);
-
-
-            GradeStatistics stats = book.ComputerStatistics();
-
-            WriteResult("Average", stats.AverageGrade);
-            WriteResult("Highest" , stats.HighestGrade);
-            WriteResult("Lowest", stats.LowestGrade);
-            WriteResult(stats.Description, stats.LetterGrade);
-
-            //int[] ages = { 2, 21, 40, 72, 100 };
-            //foreach (int value in ages)
-            //{
-            //    Console.WriteLine(value);
-            //}
-
-            //for (int i=0; i<7; i++)
-            //{
-
-            //    Console.WriteLine(ages[i]);
-            //}
-           
-            
-            Console.ReadKey();
-            
+            catch (Exception)
+            {
+                Console.WriteLine("Something went wrong!");
+            }
         }
+
         static void WriteResult(string description, string result)
         {
             Console.WriteLine($"{description}:{result}");
